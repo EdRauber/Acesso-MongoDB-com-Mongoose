@@ -17,17 +17,29 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { nome, preco } = req.body ?? {};
+  const { nome, descricao, preco, categoria, estoque, fabricante } = req.body ?? {};
 
-  if (typeof nome !== 'string' || !nome.trim() || !precoValido(preco)) {
-    return res.status(400).json({
-      erro: 'Informe um nome e um preço não negativo com até duas casas decimais.'
+  try {
+    const produto = await Produto.create({
+      nome,
+      descricao,
+      preco,
+      categoria,
+      estoque,
+      fabricante
     });
-  }
 
-  const produto = await Produto.create({ nome, preco });
-  res.status(201).json(produto);
+    res.status(201).json(produto);
+  } catch (erro) {
+    if (erro.name === 'ValidationError') {
+      return res.status(400).json({ erro: erro.message });
+    }
+
+    console.error(erro);
+    res.status(500).json({ erro: 'Não foi possível cadastrar o produto.' });
+  }
 });
+
 
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
