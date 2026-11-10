@@ -1,0 +1,11 @@
+@base = http://localhost:3000
+GET {{base}}/api/health
+
+###
+GET {{base}}/api/produtos
+
+###
+POST {{base}}/api/produtos
+Content-Type: application/json
+
+{"nome":"Cabo HDMI","preco":35,"categoria":"Acessórios","estoque":20}
